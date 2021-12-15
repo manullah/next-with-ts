@@ -1,20 +1,26 @@
 import { NextPage } from "next";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import {
   Flex,
   Input,
   Button,
   InputGroup,
-  Stack,
-  InputLeftElement,
   Box,
-  Link,
   FormControl,
-  FormHelperText,
   InputRightElement,
+  Heading,
+  FormLabel,
+  CircularProgress,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import {
+  ClientSafeProvider,
+  getProviders,
+  LiteralUnion,
+} from "next-auth/react";
+import { BuiltInProviderType } from "next-auth/providers";
 
 interface IFormInputs {
   email: string;
@@ -22,7 +28,23 @@ interface IFormInputs {
 }
 
 const Login: NextPage = () => {
+  const [providers, setProviders] = useState<Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  > | null>();
+
+  useEffect(() => {
+    const setTheProviders = async () => {
+      const setupProviders = await getProviders();
+      setProviders(setupProviders);
+    };
+    setTheProviders();
+  }, []);
+
+  console.log(providers);
+
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { control, handleSubmit } = useForm<IFormInputs>({
     defaultValues: {
       email: "",
@@ -31,105 +53,85 @@ const Login: NextPage = () => {
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
+    setIsLoading((prev) => !prev);
+    setIsLoading((prev) => !prev);
     console.log(data);
   };
 
   return (
     <>
-      <Flex
-        flexDirection="column"
-        width="100wh"
-        height="100vh"
-        backgroundColor="gray.200"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Stack
-          flexDir="column"
-          mb="2"
-          justifyContent="center"
-          alignItems="center"
+      <Flex width="full" height="100vh" align="center" justifyContent="center">
+        <Box
+          p={8}
+          maxWidth="500px"
+          borderWidth={1}
+          borderRadius={8}
+          boxShadow="lg"
         >
-          <Box minW={{ base: "90%", md: "468px" }}>
+          <Box textAlign="center">
+            <Heading>Login</Heading>
+          </Box>
+          <Box my={4} textAlign="left">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Stack
-                spacing={4}
-                p="1rem"
-                backgroundColor="whiteAlpha.900"
-                boxShadow="md"
-              >
-                <Controller
-                  name="email"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <FormControl>
-                      <InputGroup>
-                        <InputLeftElement pointerEvents="none" />
-                        <Input
-                          {...field}
-                          id="email"
-                          type="email"
-                          placeholder="email address"
-                        />
-                      </InputGroup>
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="password"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <FormControl>
-                      <InputGroup>
-                        <InputLeftElement
-                          pointerEvents="none"
-                          color="gray.300"
-                        />
-                        <Input
-                          {...field}
-                          id="password"
-                          name="password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Password"
-                        />
-                        <InputRightElement width="4.5rem">
-                          <Button
-                            h="1.75rem"
-                            size="sm"
-                            onClick={() =>
-                              setShowPassword((prevState) => !prevState)
-                            }
-                          >
-                            {showPassword ? "Hide" : "Show"}
-                          </Button>
-                        </InputRightElement>
-                      </InputGroup>
-                      <FormHelperText id="password" textAlign="right">
-                        <Link>forgot password?</Link>
-                      </FormHelperText>
-                    </FormControl>
-                  )}
-                />
-                <Button
-                  borderRadius={0}
-                  type="submit"
-                  variant="solid"
-                  colorScheme="teal"
-                  width="full"
-                >
-                  Login
+              <Controller
+                name="email"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <FormControl id="email" isRequired>
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="test@test.com"
+                      size="lg"
+                    />
+                  </FormControl>
+                )}
+              />
+              <Controller
+                name="password"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <FormControl id="password" isRequired mt={6}>
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                      <Input
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="*******"
+                        size="lg"
+                      />
+                      <InputRightElement width="3rem">
+                        <Button
+                          h="1.5rem"
+                          size="sm"
+                          onClick={() =>
+                            setShowPassword((prevState) => !prevState)
+                          }
+                        >
+                          {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  </FormControl>
+                )}
+              />
+              <Button variant="outline" type="submit" width="full" mt={4}>
+                {isLoading ? (
+                  <CircularProgress isIndeterminate size="24px" color="teal" />
+                ) : (
+                  "Sign In"
+                )}
+              </Button>
+              <a href={providers?.github.signinUrl}>
+                <Button variant="outline" width="full" mt={4}>
+                  Github Sign in
                 </Button>
-              </Stack>
+              </a>
             </form>
           </Box>
-        </Stack>
-        <Box>
-          New to us?{" "}
-          <Link color="teal.500" href="/register">
-            Sign Up
-          </Link>
         </Box>
       </Flex>
     </>

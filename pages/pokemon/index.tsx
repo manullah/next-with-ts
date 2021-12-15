@@ -30,17 +30,19 @@ const Pokemon: NextPage = () => {
     }
 
     if (isSuccess) {
-      return pokemons.results.map((pokemon: any, index: number) => (
-        <Box
-          textAlign="center"
-          borderWidth={1}
-          borderRadius={8}
-          padding="4"
-          key={index}
-        >
-          <Link href={`/pokemon/${pokemon.name}`}>{pokemon.name}</Link>
-        </Box>
-      ));
+      return pokemons.results.map(
+        (pokemon: { name: string; url: string }, index: number) => (
+          <Box
+            textAlign="center"
+            borderWidth={1}
+            borderRadius={8}
+            padding="4"
+            key={index}
+          >
+            <Link href={`/pokemon/${pokemon.name}`}>{pokemon.name}</Link>
+          </Box>
+        )
+      );
     }
 
     return <></>;
