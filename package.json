@@ -11,7 +11,8 @@
     "check-format": "prettier --check .",
     "check-lint": "eslint . --ext ts --ext tsx --ext js",
     "format": "prettier --write .",
-    "test-all": "npm run check-format && npm run check-lint && npm run check-types && npm run build"
+    "test-all": "npm run check-format && npm run check-lint && npm run check-types && npm run build",
+    "serve-json": "json-server --watch db.json --port 4000"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
@@ -20,6 +21,7 @@
     "@emotion/styled": "^11.6.0",
     "axios": "^0.24.0",
     "framer-motion": "^4.1.17",
+    "json-server": "^0.17.0",
     "next": "12.0.7",
     "next-auth": "^4.0.5",
     "react": "17.0.2",
