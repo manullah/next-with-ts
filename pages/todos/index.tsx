@@ -44,7 +44,6 @@ const Todos: NextPage = () => {
   return (
     <>
       <Container maxW="container.xl" p={[0, 10]}>
-        {idActived}
         <HStack spacing={10} align="start">
           <Box flex="1">
             <Input
