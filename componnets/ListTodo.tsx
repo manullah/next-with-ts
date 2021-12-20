@@ -4,13 +4,12 @@ import { IResponseTodo } from "../utils/types/todo";
 import { Button } from "@chakra-ui/button";
 import { useDeleteTodoData } from "../utils/hooks/todoData";
 
-const ListTodo = ({
-  todo,
-  updateId,
-}: {
+interface IPropsListTodo {
   todo: IResponseTodo;
   updateId: (id: number) => void;
-}) => {
+}
+
+const ListTodo = ({ todo, updateId }: IPropsListTodo) => {
   // fetch query
   const { mutate: deleteTodo } = useDeleteTodoData();
 

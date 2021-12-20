@@ -60,7 +60,7 @@ const Todos: NextPage = () => {
           <Box flex="2">
             <FormTodo
               id={idActived}
-              removeIdActived={() => setIdActived(0)}
+              removeId={() => setIdActived(0)}
             ></FormTodo>
           </Box>
         </HStack>

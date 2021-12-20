@@ -3,16 +3,19 @@ import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAddTodoData, useFetchTodoIdData } from "../utils/hooks/todoData";
+import {
+  useAddTodoData,
+  useFetchTodoIdData,
+  useUpdateTodoData,
+} from "../utils/hooks/todoData";
 import { IFormTodo } from "../utils/types/todo";
 
-const FormTodo = ({
-  id,
-  removeIdActived,
-}: {
+interface IPropsFormTodo {
   id: number;
-  removeIdActived: () => void;
-}) => {
+  removeId: () => void;
+}
+
+const FormTodo = ({ id: idActived, removeId }: IPropsFormTodo) => {
   // fetch query
   const {
     isSuccess,
@@ -20,14 +23,20 @@ const FormTodo = ({
     isLoading,
     isError,
   } = useFetchTodoIdData({
-    id,
+    id: idActived,
     onSuccess: (data) => {
-      setValue("title", data.title);
-      setValue("description", data.description);
+      setValue("title", data?.title || "");
+      setValue("description", data?.description || "");
     },
   });
   const { mutate: addTodo } = useAddTodoData({
     onSuccess: () => reset(),
+  });
+  const { mutate: editTodo } = useUpdateTodoData({
+    onSuccess: () => {
+      reset();
+      removeId();
+    },
   });
 
   // form
@@ -37,7 +46,8 @@ const FormTodo = ({
       description: "",
     },
   });
-  const onSubmit: SubmitHandler<IFormTodo> = (data) => addTodo(data);
+  const onSubmit: SubmitHandler<IFormTodo> = (data) =>
+    idActived ? editTodo({ id: idActived, todo: data }) : addTodo(data);
 
   const renderResult = () => {
     if (isLoading) {
@@ -62,7 +72,7 @@ const FormTodo = ({
         variant="solid"
         mb={4}
         onClick={() => {
-          removeIdActived();
+          removeId();
           reset();
         }}
       >

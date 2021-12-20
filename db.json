@@ -7,16 +7,19 @@
       "done": false
     },
     {
-      "id": 2,
       "title": "Learn JS",
       "description": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio fugiat rerum facere tempore iusto ab et quisquam vero perferendis voluptas!",
-      "done": false
+      "id": 2
     },
     {
-      "id": 3,
       "title": "Learn PHP",
       "description": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio fugiat rerum facere tempore iusto ab et quisquam vero perferendis voluptas!",
-      "done": true
+      "id": 3
+    },
+    {
+      "title": "Learn Go",
+      "description": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio fugiat rerum facere tempore iusto ab et quisquam vero perferendis voluptas!",
+      "id": 4
     }
   ]
 }

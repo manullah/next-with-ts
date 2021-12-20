@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { IFormTodo, IQueryFetchTodo, IResponseTodo } from "../types/todo";
+import { IOptionsReactQuery } from "../types/queries";
 
 export const useFetchTodoData = ({ params }: { params: IQueryFetchTodo }) => {
   return useQuery<Array<IResponseTodo>>(["fetchTodos", params], () =>
@@ -10,13 +11,7 @@ export const useFetchTodoData = ({ params }: { params: IQueryFetchTodo }) => {
   );
 };
 
-export const useFetchTodoIdData = ({
-  id,
-  onSuccess,
-}: {
-  id: number;
-  onSuccess: (data: IResponseTodo) => void;
-}) => {
+export const useFetchTodoIdData = ({ id, onSuccess }: IOptionsReactQuery) => {
   return useQuery(
     ["fetchTodoId", id],
     () =>
@@ -28,20 +23,20 @@ export const useFetchTodoIdData = ({
   );
 };
 
-export const useAddTodoData = ({ onSuccess }: { onSuccess: () => void }) => {
+export const useAddTodoData = ({ onSuccess }: IOptionsReactQuery) => {
   const queryClient = useQueryClient();
   return useMutation(
     (todo: IFormTodo) => axios.post("http://localhost:4000/todos", todo),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("fetchTodos");
-        onSuccess();
+        if (onSuccess) onSuccess();
       },
     }
   );
 };
 
-export const useUpdateTodoData = ({ onSuccess }: { onSuccess: () => void }) => {
+export const useUpdateTodoData = ({ onSuccess }: IOptionsReactQuery) => {
   const queryClient = useQueryClient();
   return useMutation(
     ({ id, todo }: { id: number; todo: IFormTodo }) =>
@@ -49,7 +44,7 @@ export const useUpdateTodoData = ({ onSuccess }: { onSuccess: () => void }) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("fetchTodos");
-        onSuccess();
+        if (onSuccess) onSuccess();
       },
     }
   );
